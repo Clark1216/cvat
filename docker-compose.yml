@@ -8,7 +8,7 @@ services:
   cvat_db:
     container_name: cvat_db
     image: postgres:10-alpine
-    restart: always
+#    restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_DB: cvat
@@ -21,14 +21,14 @@ services:
   cvat_redis:
     container_name: cvat_redis
     image: redis:4.0-alpine
-    restart: always
+#    restart: always
     networks:
       - cvat
 
   cvat:
     container_name: cvat
     image: openvino/cvat_server
-    restart: always
+#    restart: always
     depends_on:
       - cvat_redis
       - cvat_db
@@ -54,7 +54,7 @@ services:
   cvat_ui:
     container_name: cvat_ui
     image: openvino/cvat_ui
-    restart: always
+#    restart: always
     depends_on:
       - cvat
     labels:
@@ -68,7 +68,7 @@ services:
   traefik:
     image: traefik:v2.4
     container_name: traefik
-    restart: always
+#    restart: always
     command:
       - "--providers.docker.exposedByDefault=false"
       - "--providers.docker.network=cvat"
@@ -82,7 +82,7 @@ services:
     #   - traefik.http.routers.dashboard.service=api@internal
     #   - traefik.http.routers.dashboard.rule=Host(`${CVAT_HOST:-localhost}`)
     ports:
-      - 8080:8080
+      - 8888:8080
       - 8090:8090
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
