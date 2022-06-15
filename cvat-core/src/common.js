@@ -1,4 +1,4 @@
-// Copyright (C) 2019-2021 Intel Corporation
+// Copyright (C) 2019-2022 Intel Corporation
 //
 // SPDX-License-Identifier: MIT
 
@@ -36,7 +36,7 @@
                 if (!(prop in fields)) {
                     throw new ArgumentError(`Unsupported filter property has been received: "${prop}"`);
                 } else if (!fields[prop](filter[prop])) {
-                    throw new ArgumentError(`Received filter property "${prop}" is not satisfied for checker`);
+                    throw new ArgumentError(`Received filter property "${prop}" does not satisfy API`);
                 }
             }
         }
@@ -87,47 +87,30 @@
         return true;
     }
 
-    function camelToSnake(str) {
-        if (typeof str !== 'string') {
-            throw new ArgumentError('str is expected to be string');
-        }
-
-        return (
-            str[0].toLowerCase() + str.slice(1, str.length).replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
-        );
-    }
-
-    function negativeIDGenerator() {
-        const value = negativeIDGenerator.start;
-        negativeIDGenerator.start -= 1;
-        return value;
-    }
-    negativeIDGenerator.start = -1;
-
     class FieldUpdateTrigger {
-        constructor(initialFields) {
-            const data = { ...initialFields };
+        constructor() {
+            let updatedFlags = {};
 
             Object.defineProperties(
                 this,
                 Object.freeze({
-                    ...Object.assign(
-                        {},
-                        ...Array.from(Object.keys(data), (key) => ({
-                            [key]: {
-                                get: () => data[key],
-                                set: (value) => {
-                                    data[key] = value;
-                                },
-                                enumerable: true,
-                            },
-                        })),
-                    ),
                     reset: {
                         value: () => {
-                            Object.keys(data).forEach((key) => {
-                                data[key] = false;
-                            });
+                            updatedFlags = {};
+                        },
+                    },
+                    update: {
+                        value: (name) => {
+                            updatedFlags[name] = true;
+                        },
+                    },
+                    getUpdated: {
+                        value: (data, propMap = {}) => {
+                            const result = {};
+                            for (const updatedField of Object.keys(updatedFlags)) {
+                                result[propMap[updatedField] || updatedField] = data[updatedField];
+                            }
+                            return result;
                         },
                     },
                 }),
@@ -142,9 +125,7 @@
         isString,
         checkFilter,
         checkObjectType,
-        negativeIDGenerator,
         checkExclusiveFields,
-        camelToSnake,
         FieldUpdateTrigger,
     };
 })();

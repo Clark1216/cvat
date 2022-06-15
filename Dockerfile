@@ -11,6 +11,7 @@ RUN apt-get update && \
         apache2-dev \
         build-essential \
         curl \
+        libgeos-dev \
         libldap2-dev \
         libsasl2-dev \
         nasm \
@@ -44,7 +45,7 @@ RUN curl -sL https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 --outp
 # Install requirements
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
-RUN python3 -m pip install --no-cache-dir -U pip==21.0.1 setuptools==53.0.0 wheel==0.36.2
+RUN python3 -m pip install --no-cache-dir -U pip==22.0.2 setuptools==60.6.0 wheel==0.37.1
 COPY cvat/requirements/ /tmp/requirements/
 RUN DATUMARO_HEADLESS=1 python3 -m pip install --no-cache-dir -r /tmp/requirements/${DJANGO_CONFIGURATION}.txt
 
@@ -76,6 +77,7 @@ RUN apt-get update && \
         apache2 \
         ca-certificates \
         libapache2-mod-xsendfile \
+        libgeos-dev \
         libgomp1 \
         libgl1 \
         supervisor \
@@ -152,7 +154,6 @@ USER ${USER}
 WORKDIR ${HOME}
 
 RUN mkdir data share media keys logs /tmp/supervisord
-RUN python3 manage.py collectstatic
 
 EXPOSE 8080
 ENTRYPOINT ["/usr/bin/supervisord"]

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Intel Corporation
+// Copyright (C) 2021-2022 Intel Corporation
 //
 // SPDX-License-Identifier: MIT
 
@@ -13,7 +13,8 @@ context('Add/delete labels and attributes.', () => {
     before(() => {
         cy.visit('auth/login');
         cy.login();
-        cy.get('#cvat-create-task-button').click();
+        cy.get('.cvat-create-task-dropdown').click();
+        cy.get('.cvat-create-task-button').click();
     });
 
     describe(`Testing "${labelName}"`, () => {
@@ -64,7 +65,7 @@ context('Add/delete labels and attributes.', () => {
         });
 
         it('Delete the added label. The label removed.', () => {
-            cy.get('.cvat-constructor-viewer-item').find('[aria-label="close"]').click();
+            cy.get('.cvat-constructor-viewer-item').find('[aria-label="delete"]').click();
             cy.get('.cvat-constructor-viewer-item').should('not.exist');
         });
     });

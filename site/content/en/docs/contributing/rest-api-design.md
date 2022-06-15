@@ -21,7 +21,7 @@ Common scheme for our REST API is `<VERB> [namespace] <objects> <id> <action>`.
 ## Design principles
 
 - Use nouns instead of verbs in endpoint paths. For example,
-  `POST /api/v1/tasks` instead of `POST /api/v1/tasks/create`.
+  `POST /api/tasks` instead of `POST /api/tasks/create`.
 - Accept and respond with JSON whenever it is possible
 - Name collections with plural nouns (e.g. `/tasks`, `/projects`)
 - Try to keep the API structure flat. Prefer two separate endpoints
@@ -36,11 +36,12 @@ Common scheme for our REST API is `<VERB> [namespace] <objects> <id> <action>`.
 - Allow filtering, sorting, and pagination
 - Maintain good security practices
 - Cache data to improve performance
-- Versioning our APIs (e.g. `/api/v1`, `/api/v2`). It should be done when you
-  delete an endpoint or modify its behaviors.
+- Versioning our APIs. It should be done when you delete an endpoint or modify
+  its behaviors. Versioning uses a schema with `Accept` header with vendor media type.
 
 ## Links
 
 - [Best practices for REST API design](https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/)
 - [Flat vs. nested resources](https://stackoverflow.com/questions/20951419/what-are-best-practices-for-rest-nested-resources)
 - [REST API Design Best Practices for Sub and Nested Resources](https://www.moesif.com/blog/technical/api-design/REST-API-Design-Best-Practices-for-Sub-and-Nested-Resources/)
+- [A specification for building APIs in JSON](https://jsonapi.org/)

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Intel Corporation
+// Copyright (C) 2021-2022 Intel Corporation
 //
 // SPDX-License-Identifier: MIT
 
@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 import Select from 'antd/lib/select';
 import getCore from 'cvat-core-wrapper';
 import { CloudStorage } from 'reducers/interfaces';
-import { AzureProvider, S3Provider } from 'icons';
+import { AzureProvider, GoogleCloudProvider, S3Provider } from 'icons';
 import { ProviderType } from 'utils/enums';
 import CloudStorageFiles from './cloud-storages-files';
 
@@ -44,7 +44,13 @@ async function searchCloudStorages(filter: Record<string, string>): Promise<Clou
 const { Option } = Select;
 
 const searchCloudStoragesWrapper = debounce((phrase, setList) => {
-    const filter = { displayName: phrase };
+    const filter = {
+        filter: JSON.stringify({
+            and: [{
+                '==': [{ var: 'display_name' }, phrase],
+            }],
+        }),
+    };
     searchCloudStorages(filter).then((list) => {
         setList(list);
     });
@@ -125,11 +131,12 @@ export default function CloudStorageTab(props: Props): JSX.Element {
                             <span
                                 className='cvat-cloud-storage-select-provider'
                             >
-                                {_cloudStorage.providerType === ProviderType.AWS_S3_BUCKET ? (
-                                    <S3Provider />
-                                ) : (
-                                    <AzureProvider />
-                                )}
+                                {_cloudStorage.providerType === ProviderType.AWS_S3_BUCKET && <S3Provider />}
+                                {_cloudStorage.providerType === ProviderType.AZURE_CONTAINER && <AzureProvider />}
+                                {
+                                    _cloudStorage.providerType === ProviderType.GOOGLE_CLOUD_STORAGE &&
+                                    <GoogleCloudProvider />
+                                }
                                 {_cloudStorage.displayName}
                             </span>
                         ),
